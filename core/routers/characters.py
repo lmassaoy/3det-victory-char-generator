@@ -7,7 +7,6 @@ from fastapi import APIRouter, HTTPException, Header
 
 
 router = APIRouter()
-# characters_in_storage = './data/characters/all_characters.json'
 
 
 char1 = Character(name='Roger', power=3, hability=3, resistance=2)
@@ -22,14 +21,6 @@ char1.remove_advantage('genius')
 char1.remove_disadvantage('fragile')
 char1.alter_xp('+',10)
 
-# try:
-#     characters_list = json.load(open(characters_in_storage))
-# except FileNotFoundError as e:
-#     print(f'Cache object not found. Creating a new one at {characters_in_storage}')
-#     initial_cache_structure = []
-#     with open(characters_in_storage, 'w') as outfile:  
-#         json.dump(initial_cache_structure, outfile)
-#     characters_list = initial_cache_structure
 
 characters_list = []
 characters_list.append(char1)
