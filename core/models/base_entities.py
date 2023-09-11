@@ -1,5 +1,6 @@
-from typing import List
+from typing import List, Optional
 from uuid import uuid4
+from fastapi.encoders import jsonable_encoder
 from pydantic import BaseModel, ConfigDict, Field
 
 
@@ -53,6 +54,18 @@ class Character(BaseUnit):
 
     def remove_disadvantage(self, disadvantage=str):
         self.disadvantages.remove(disadvantage)
+
+    def to_json(self):
+        return jsonable_encoder(self, exclude_none=True)
+
+    def to_bson(self):
+        data = self.model_dump(by_alias=True, exclude_none=True)
+        try:
+            if data["_id"] is None:
+                data.pop("_id")
+        except KeyError:
+            return data
+        return data
 
 
 # char1 = Character(name='Roger', attributes=[3,4,3])
