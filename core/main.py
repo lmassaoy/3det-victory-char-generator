@@ -1,31 +1,22 @@
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
-from .routers import characters
+from .routers import characters, npcs
+from .utils import contants as const
 
-
-description = """
-## TBD
-"""
 
 app = FastAPI(
-    title="3D&T Victory Character Creator API",
-    summary="An API for creating/storing 3D&T characters",
-    description=description,
-    version="0.0.1",
-    terms_of_service="http://example.com/terms/",
-    contact={
-        "name": "Luis Yamada",
-        "url": "https://www.linkedin.com/in/luis-yamada/",
-        "email": "luishm.yamada@gmail.com",
-    },
-    license_info={
-        "name": "Apache 2.0",
-        "url": "https://www.apache.org/licenses/LICENSE-2.0.html",
-    },
+    title=const.OPENAPI_TITLE,
+    summary=const.OPENAPI_SUMMARY,
+    description=const.OPENAPI_DESCRIPTION,
+    version=const.OPENAPI_VERSION,
+    terms_of_service=const.OPENAPI_VERSION,
+    contact=const.OPENAPI_CONTACT,
+    license_info=const.OPENAPI_LICENSE_INFO,
 )
 
 
 app.include_router(characters.router)
+app.include_router(npcs.router)
 
 
 @app.get("/status", tags=['ops'], summary='Check API status')

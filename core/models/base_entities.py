@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List
 from uuid import uuid4
 from fastapi.encoders import jsonable_encoder
 from pydantic import BaseModel, ConfigDict, Field
@@ -7,28 +7,27 @@ from pydantic import BaseModel, ConfigDict, Field
 class BaseUnit(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
 
+    id: str = Field(description='Identifier created by the system', default_factory=lambda: uuid4().hex)
     name: str = Field(description='Name of the unit', min_length=3, max_length=50)
     concept: str = Field(description='Concept of the unit', default='')
-    po: int = Field(description='Power', default=None, alias='power')
-    ha: int = Field(description='Hability', default=None, alias='hability')
-    res: int = Field(description='Resistance', default=None, alias='resistance')
-    ap: int = Field(description='Action Points', default=0, alias='actionPoints')
-    mp: int = Field(description='Mana Points', default=0, alias='manaPoints')
-    hp: int = Field(description='Health Points', default=0, alias='healthPoints')
+    power: int = Field(description='Power', default=None, alias='power')
+    hability: int = Field(description='Hability', default=None, alias='hability')
+    resistance: int = Field(description='Resistance', default=None, alias='resistance')
+    action_points: int = Field(description='Action Points', default=0, alias='actionPoints')
+    mana_points: int = Field(description='Mana Points', default=0, alias='manaPoints')
+    health_points: int = Field(description='Health Points', default=0, alias='healthPoints')
+    total_points: int = Field(description='Total Points', default=0, alias='totalPoints')
+    expertises: List[str] = Field(description='List of expertises the unit has', default=[])
+    advantages: List[str] = Field(description='List of advantages the unit has', default=[])
+    disadvantages: List[str] = Field(description='List of disadvantages the unit has', default=[])
+    image_url: str = Field(description='URL address of the image of the unit', alias='imageURL')
 
     def calculate_additional_points(self):
-        self.ap = self.po
-        self.mp = self.ha*5
-        self.hp = self.res*5
-
-
-class Character(BaseUnit):
-    id: str = Field(description='Identifier created by the system', default_factory=lambda: uuid4().hex)
-    exp: int = Field(description='Experience points earned by the character', default=0, alias='experiencePoints')
-    expertises: List[str] = Field(description='List of expertises the character has', default=[])
-    advantages: List[str] = Field(description='List of advantages the character has', default=[])
-    disadvantages: List[str] = Field(description='List of disadvantages the character has', default=[])      
-
+        self.action_points = self.power
+        self.mana_points = self.hability*5
+        self.health_points = self.resistance*5
+        self.total_points = self.power + self.hability + self.resistance + len(self.expertises) + len(self.advantages) - len(self.disadvantages)
+    
     def include_expertise(self, expertise=str):
         self.expertises.append(expertise)
 
@@ -55,3 +54,15 @@ class Character(BaseUnit):
         except KeyError:
             return data
         return data
+
+
+class Character(BaseUnit):
+    exp: int = Field(description='Experience points earned by the character', default=0, alias='experiencePoints')
+    money_amount: int = Field(description='Amount of money the character has', default=0, alias='moneyAmount')
+    bag: List[str] = Field(description='List of items the character has', default=[], alias='bag')
+
+
+class NPC(BaseUnit):
+    money_to_drop: int = Field(description='Amount of money the NPC will drop', default=0, alias='moneyToDrop')
+    items_to_drop: List[str] = Field(description='List of items the NPC will drop', default=[], alias='itemsToDrop')
+    notes_for_the_master: List[str] = Field(description='List of notes related to the NPC for supporting the master', default=[], alias='notesForTheMaster')
