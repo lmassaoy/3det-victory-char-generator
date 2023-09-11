@@ -27,18 +27,7 @@ class Character(BaseUnit):
     exp: int = Field(description='Experience points earned by the character', default=0, alias='experiencePoints')
     expertises: List[str] = Field(description='List of expertises the character has', default=[])
     advantages: List[str] = Field(description='List of advantages the character has', default=[])
-    disadvantages: List[str] = Field(description='List of disadvantages the character has', default=[])
-
-    def alter_xp(self, op=str, qty=int):
-        if self.exp is None: self.exp = 0
-
-        if op == '+':
-            self.exp = self.exp + qty
-        elif op == '-':
-            self.exp = self.exp - qty
-        else:
-            print('operator should be `+` or `-`.')
-        
+    disadvantages: List[str] = Field(description='List of disadvantages the character has', default=[])      
 
     def include_expertise(self, expertise=str):
         self.expertises.append(expertise)
@@ -66,20 +55,3 @@ class Character(BaseUnit):
         except KeyError:
             return data
         return data
-
-
-# char1 = Character(name='Roger', attributes=[3,4,3])
-# char1.calculate_additional_points()
-# char1.include_expertise('fight')
-# char1.include_expertise('sports')
-# char1.include_advantage('special attack')
-# char1.include_advantage('genius')
-# char1.include_disadvantage('fragile')
-# char1.include_disadvantage('code of honor: combat')
-# char1.remove_advantage('genius')
-# char1.remove_disadvantage('fragile')
-# char1.alter_xp('+',10)
-
-# print(char1)
-# print(char1.model_dump(by_alias=True))
-# print(char1.model_json_schema())

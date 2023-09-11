@@ -1,1 +1,1 @@
-# 3det-victory-char-generator
+# 3D&T-victory-char-generator
